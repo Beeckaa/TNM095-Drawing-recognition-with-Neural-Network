@@ -7,10 +7,14 @@ var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = 600;
+canvas.height = 400;
 
 context.lineWidth = radius * 2;
+
+var clearCanvas = function() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 var drawing = function(e){
 	if(dragging) {
