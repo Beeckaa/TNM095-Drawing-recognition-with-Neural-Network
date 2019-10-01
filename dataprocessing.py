@@ -71,19 +71,17 @@ print(y_test[0])
 plt.show()
 
 ########################################################################################
-####################################  Plotting #########################################
+#################################### Plotting ##########################################
 ########################################################################################
 
-# index_start = 1000 # <--- Change this for a different doodle
-# img1 = x_train[index_start]
-# img2 = data_sheep[index_start]
-# img3 = data_turtle[index_start]
-
-# plt.imshow(img1.reshape((28,28)))
-# plt.title(y_train[index_start])
-# plt.show()
-# plt.imshow(img2.reshape((28,28)))
-# plt.show()
-# plt.imshow(img3.reshape((28,28)))
-# plt.show()
+plt.figure(figsize=(10,10))
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    img1 = x_train[i]
+    plt.imshow(img1.reshape((28,28)), cmap=plt.cm.binary)
+    plt.xlabel([y_train[i]])
+plt.show()
 
