@@ -17,16 +17,16 @@ label_turtle = [2] * len(data_turtle)
 #Separating training data and testing data
 
 #bird
-bird_x_train, bird_x_test = data_bird[:20000], data_bird[20000:25000]
-bird_y_train, bird_y_test = label_bird[:20000], label_bird[20000:25000]
+bird_x_train, bird_x_test = data_bird[:40000], data_bird[40000:45000]
+bird_y_train, bird_y_test = label_bird[:40000], label_bird[40000:45000]
 
 #sheep
-sheep_x_train, sheep_x_test = data_sheep[:20000], data_sheep[20000:25000]
-sheep_y_train, sheep_y_test = label_sheep[:20000], label_sheep[20000:25000]
+sheep_x_train, sheep_x_test = data_sheep[:40000], data_sheep[40000:45000]
+sheep_y_train, sheep_y_test = label_sheep[:40000], label_sheep[40000:45000]
 
 #turtle
-turtle_x_train, turtle_x_test = data_turtle[:20000], data_turtle[20000:25000]
-turtle_y_train, turtle_y_test = label_turtle[:20000], label_turtle[20000:25000]
+turtle_x_train, turtle_x_test = data_turtle[:40000], data_turtle[40000:45000]
+turtle_y_train, turtle_y_test = label_turtle[:40000], label_turtle[40000:45000]
 
 # concatenate
 x_train = np.concatenate([bird_x_train[:],sheep_x_train[:], turtle_x_train[:]])
@@ -44,31 +44,27 @@ x_train = tf.keras.utils.normalize(x_train, axis=1)
 x_test = tf.keras.utils.normalize(x_test, axis=1)
 
 
-# Creating a simple model
-model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Flatten())
-model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
+# # Creating a simple model
+# model = tf.keras.models.Sequential()
+# model.add(tf.keras.layers.Flatten())
+# model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+# model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+# model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
 
-# Training
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-model.fit(x_train, y_train, epochs=3)
+# # Training
+# model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# model.fit(x_train, y_train, epochs=3)
 
-# Testing the model
-val_loss, val_acc = model.evaluate(x_test, y_test)
-print(val_loss, val_acc)
+# # Testing the model
+# val_loss, val_acc = model.evaluate(x_test, y_test)
+# print(val_loss, val_acc)
 
-# Save the model an loading it into the program again
-model.save('doodle_model')
+# # Save the model an loading it into the program again
+# model.save('doodle_model')
 new_model = tf.keras.models.load_model('doodle_model')
 
-# Predict
+# Predict (Predicts all images in x_test and creates an array with each prediction)
 predictions = new_model.predict(x_test)
-plt.imshow(x_test[0].reshape((28,28)))
-plt.title(np.argmax(predictions[0]))
-print(y_test[0])
-plt.show()
 
 ########################################################################################
 #################################### Plotting ##########################################
@@ -80,8 +76,15 @@ for i in range(25):
     plt.xticks([])
     plt.yticks([])
     plt.grid(False)
-    img1 = x_train[i]
+    img1 = x_test[i]
     plt.imshow(img1.reshape((28,28)), cmap=plt.cm.binary)
-    plt.xlabel([y_train[i]])
+    if np.argmax(predictions[[i]]) == 0:
+        plt.xlabel('bird ')
+    elif np.argmax(predictions[[i]]) == 1:
+        plt.xlabel('sheep ')
+    elif np.argmax(predictions[[i]]) == 2:
+        plt.xlabel('turtle ')
+    #plt.ylabel(y_test[i])
+    plt.ylabel(round(100*np.max(predictions[i]), 2))
 plt.show()
 
