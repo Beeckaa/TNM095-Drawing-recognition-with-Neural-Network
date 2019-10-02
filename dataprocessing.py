@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.utils import shuffle
 import tensorflowjs as tfjs
+from sklearn.metrics import confusion_matrix
 
 # Load data (numpy 28x28 bitmaps)
 data_bird = np.load('bitmaps/bird.npy')
@@ -68,11 +69,7 @@ x_test = tf.keras.utils.normalize(x_test, axis=1)
 # model.add(tf.keras.layers.Flatten())
 # model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
 # model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-<<<<<<< HEAD
-# model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax))
-=======
 # model.add(tf.keras.layers.Dense(6, activation=tf.nn.softmax))
->>>>>>> 8e2d775f4617c6155cf68bb9b66bb192a5ad29cb
 
 # # Training
 # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
@@ -94,7 +91,7 @@ predictions = new_model.predict(x_test)
 #################################### Plotting ##########################################
 ########################################################################################
 
-
+#Plot the first 25 entries accompanied with a label-prediction for each one
 plt.figure(figsize=(10,10))
 for i in range(25):
     plt.subplot(5,5,i+1)
@@ -124,15 +121,7 @@ plt.show()
 ################################## Confusion Matrix ###################################
 ########################################################################################
 
-
-
-#Now let's visualize the errors between the predictions 
-#and the actual labels using a confusion matrix
-from sklearn.metrics import confusion_matrix
-
-# plt.xlabel('Predicted Values')
-# plt.title('Correct Values')
-
+#Create a new array and insert the predicted values
 temp_list = []
 
 for i in range(len(y_test)):
@@ -144,11 +133,34 @@ for i in range(len(y_test)):
        
     elif np.argmax(predictions[[i]]) == 2:
         temp_list.append(2)
-        
 
+    elif np.argmax(predictions[[i]]) == 3:
+        temp_list.append(3)
+    
+    elif np.argmax(predictions[[i]]) == 4:
+        temp_list.append(4)
+    
+    elif np.argmax(predictions[[i]]) == 5:
+        temp_list.append(5)
+
+#Create a confusion matrix
 cm = confusion_matrix(y_test, temp_list)
 
-# cm.plt.xlabel('Predicted Values')
-# cm.plt.title('Correct Values')
-plt.matshow(cm)
+animals = ['bird', 'sheep', 'turtle', 'hedgehog', 'octopus', 'giraffe']
+
+fig, ax = plt.subplots()
+im = ax.imshow(cm, interpolation='nearest')
+ax.figure.colorbar(im, ax=ax)
+
+ax.set(xticks=np.arange(len(animals)),
+           yticks=np.arange((len(animals))),
+           xticklabels=animals, 
+           yticklabels=animals,
+           title='Confusion Matrix',
+           xlabel= 'Predicted animal',
+           ylabel='True animal')
+
+#Rotate the x-tick labels
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+
 plt.show()
