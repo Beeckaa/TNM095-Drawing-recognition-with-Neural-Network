@@ -49,7 +49,7 @@ x_test = tf.keras.utils.normalize(x_test, axis=1)
 # model.add(tf.keras.layers.Flatten())
 # model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
 # model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
+# model.add(tf.keras.layers.Dense(3, activation=tf.nn.softmax))
 
 # # Training
 # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
@@ -70,6 +70,7 @@ predictions = new_model.predict(x_test)
 #################################### Plotting ##########################################
 ########################################################################################
 
+
 plt.figure(figsize=(10,10))
 for i in range(25):
     plt.subplot(5,5,i+1)
@@ -88,3 +89,36 @@ for i in range(25):
     plt.ylabel(round(100*np.max(predictions[i]), 2))
 plt.show()
 
+
+########################################################################################
+################################## Confusion Matrix ###################################
+########################################################################################
+
+
+
+#Now let's visualize the errors between the predictions 
+#and the actual labels using a confusion matrix
+from sklearn.metrics import confusion_matrix
+
+# plt.xlabel('Predicted Values')
+# plt.title('Correct Values')
+
+temp_list = []
+
+for i in range(len(y_test)):
+    if np.argmax(predictions[[i]]) == 0:
+        temp_list.append(0)
+        
+    elif np.argmax(predictions[[i]]) == 1:
+        temp_list.append(1)
+       
+    elif np.argmax(predictions[[i]]) == 2:
+        temp_list.append(2)
+        
+
+cm = confusion_matrix(y_test, temp_list)
+
+# cm.plt.xlabel('Predicted Values')
+# cm.plt.title('Correct Values')
+plt.matshow(cm)
+plt.show()
