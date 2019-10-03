@@ -63,28 +63,28 @@ x_train = tf.keras.utils.normalize(x_train, axis=1)
 x_test = tf.keras.utils.normalize(x_test, axis=1)
 
 
-# # Creating a simple model
-# model = tf.keras.models.Sequential()
-# model.add(tf.keras.layers.Flatten())
-# model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(6, activation=tf.nn.softmax))
+# Creating a simple model
+model = tf.keras.models.Sequential()
+#model.add(tf.keras.layers.Flatten(input_shape=(28, 28)))
+model.add(tf.keras.layers.Dense(128, input_shape=(784,), activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(tf.keras.layers.Dense(6, activation=tf.nn.softmax))
 
-# # Training
-# model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-# model.fit(x_train, y_train, epochs=2)
+# Training
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=2)
 
-# # Testing the model
-# val_loss, val_acc = model.evaluate(x_test, y_test)
-# print(val_loss, val_acc)
+# Testing the model
+val_loss, val_acc = model.evaluate(x_test, y_test)
+print(val_loss, val_acc)
 
-# # Save the model an loading it into the program again. Also saving it in js format
-# model.save('doodle_model')
-new_model = tf.keras.models.load_model('doodle_model')
-tfjs.converters.save_keras_model(new_model, "doodle_model_js")
+# Save the model an loading it into the program again. Also saving it in js format
+#model.save('doodle_model_2')
+#new_model = tf.keras.models.load_model('doodle_model_2')
+tfjs.converters.save_keras_model(model, "doodle_model_js_2")
 
 # Predict (Predicts all images in x_test and creates an array with each prediction)
-predictions = new_model.predict(x_test)
+predictions = model.predict(x_test)
 
 ########################################################################################
 #################################### Plotting ##########################################
