@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.utils import shuffle
 import tensorflowjs as tfjs
+from sklearn.metrics import confusion_matrix
 
 # Load data (numpy 28x28 bitmaps)
 data_bird = np.load('bitmaps/bird.npy')
@@ -90,6 +91,7 @@ predictions = model.predict(x_test)
 #################################### Plotting ##########################################
 ########################################################################################
 
+#Plot the first 25 entries accompanied with a label-prediction for each one
 plt.figure(figsize=(10,10))
 for i in range(25):
     plt.subplot(5,5,i+1)
@@ -114,3 +116,51 @@ for i in range(25):
     plt.ylabel(round(100*np.max(predictions[i]), 2))
 plt.show()
 
+
+########################################################################################
+################################## Confusion Matrix ###################################
+########################################################################################
+
+#Create a new array and insert the predicted values
+temp_list = []
+
+for i in range(len(y_test)):
+    if np.argmax(predictions[[i]]) == 0:
+        temp_list.append(0)
+        
+    elif np.argmax(predictions[[i]]) == 1:
+        temp_list.append(1)
+       
+    elif np.argmax(predictions[[i]]) == 2:
+        temp_list.append(2)
+
+    elif np.argmax(predictions[[i]]) == 3:
+        temp_list.append(3)
+    
+    elif np.argmax(predictions[[i]]) == 4:
+        temp_list.append(4)
+    
+    elif np.argmax(predictions[[i]]) == 5:
+        temp_list.append(5)
+
+#Create a confusion matrix
+cm = confusion_matrix(y_test, temp_list)
+
+animals = ['bird', 'sheep', 'turtle', 'hedgehog', 'octopus', 'giraffe']
+
+fig, ax = plt.subplots()
+im = ax.imshow(cm, interpolation='nearest')
+ax.figure.colorbar(im, ax=ax)
+
+ax.set(xticks=np.arange(len(animals)),
+           yticks=np.arange((len(animals))),
+           xticklabels=animals, 
+           yticklabels=animals,
+           title='Confusion Matrix',
+           xlabel= 'Predicted animal',
+           ylabel='True animal')
+
+#Rotate the x-tick labels
+plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+
+plt.show()
