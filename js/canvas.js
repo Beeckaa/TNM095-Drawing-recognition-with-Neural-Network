@@ -6,8 +6,8 @@ var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
 
-// canvas.width = 600;
-// canvas.height = 400;
+canvas.width = 600;
+canvas.height = 400;
 
 context.lineWidth = radius * 2;
 
@@ -30,6 +30,8 @@ var clearCanvas = function() {
 
 var drawing = function(e){
 	if(dragging) {
+		context.strokeStyle = '#404040';
+		context.fillStyle = '#404040';
 		context.lineTo(e.offsetX, e.offsetY);
 		context.stroke();
 		context.beginPath();
@@ -41,7 +43,6 @@ var drawing = function(e){
 }
 
 var startDraw = function(e){
-
 	dragging = true;
 	drawing(e);
 }
@@ -55,35 +56,10 @@ var stopDraw = function(){
 async function predict() { 
 	imgData = context.getImageData(0,0, 600, 400);
 
-	context.putImageData(imgData, 100, 100);
+	//context.putImageData(imgData, 100, 100);
 
-	var predictions = await net.predict(preprocessCanvas(canvas)).data(); // this will run whenever "tensor" updates
-	console.log(predictions);
-	console.log(tf.argMax(predictions).data());
-	
-	// newImg = document.createElement('img')
-	// newImg.onload = function() {
-
-	// 	document.body.appendChild(canvas);
-	// }
-	//url = URL.createObjectURL('')
-
-	// canvas.toBlob(function(blob) {
-	// 	image = blob;
-	// 	newImg = document.createElement('img'),
-	// 	url = URL.createObjectURL(blob);
-	
-	// 	newImg.onload = function() {
-	// 	// no longer need to read the blob so it's revoked
-	// 	URL.revokeObjectURL(url);
-	// 	  };
-	
-	// 	newImg.src = url;
-	// 	document.body.appendChild(newImg);
-	// });
-
-	
-	
+	var predictions = await net.predict(preprocessCanvas(imgData)); // this will run whenever "tensor" updates
+	console.log("Predictions: " + predictions);
 }
 
 // EventListeners
@@ -101,6 +77,8 @@ canvas.addEventListener('touchstart', function(e){
 canvas.addEventListener('touchmove', function(e){
     var touchobj = e.changedTouches[0] // Reference first touch point for this event
     if(dragging) {
+		context.strokeStyle = '#404040';
+		context.fillStyle = '#404040';
 		context.lineTo(touchobj.clientX, touchobj.clientY);
 		context.stroke();
 		context.beginPath();
@@ -121,14 +99,12 @@ canvas.addEventListener('touchend', function(e){
 
 preprocessCanvas = (drawing) => {
 	// Preprocess image for the network
-	console.log(tf.browser.fromPixels(drawing));
 	let tensor = tf
 	.browser.fromPixels(drawing) // Shape: (600, 400, 3) - RGB image
-	.resizeNearestNeighbor([28, 28]) // Shape: (28, 28, 3) - RGB image
+	.resizeNearestNeighbor([28, 28], align_corners=true) // Shape: (28, 28, 3) - RGB image
 	.mean(2) // Shape: (28, 28) - grayscale
-	.flatten()
-	//.expandDims(2) // Shape: (28, 28, 1) - network expects 3d values with channels in the last dimension
-	.expandDims() // Shape: (1, 28, 28) - network makes predictions for "batches" of images
+	.flatten() // Shape: (784)
+	.expandDims() // Shape: (1, 784) - network makes predictions for "batches" of images
 	.toFloat(); // Network works with floating points inputs
 	return tensor.div(255.0); // Normalize [0..255] values into [0..1] range
 }
