@@ -82,7 +82,7 @@ print(val_loss, val_acc)
 # Save the model an loading it into the program again. Also saving it in js format
 #model.save('doodle_model_2')
 #new_model = tf.keras.models.load_model('doodle_model_2')
-tfjs.converters.save_keras_model(model, "doodle_model_js_2")
+tfjs.converters.save_keras_model(model, "doodle_model_js")
 
 # Predict (Predicts all images in x_test and creates an array with each prediction)
 predictions = model.predict(x_test)
@@ -156,6 +156,7 @@ ax.set(xticks=np.arange(len(animals)),
            yticks=np.arange((len(animals))),
            xticklabels=animals, 
            yticklabels=animals,
+           ylim=(-0.5, 5.5),
            title='Confusion Matrix',
            xlabel= 'Predicted animal',
            ylabel='True animal')
