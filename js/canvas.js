@@ -1,13 +1,13 @@
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
-
+var i;
 var radius = 2;
 var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
 
-canvas.width = 600;
-canvas.height = 400;
+// canvas.width = 600;
+// canvas.height = 400;
 
 context.lineWidth = radius * 2;
 
@@ -41,6 +41,7 @@ var drawing = function(e){
 }
 
 var startDraw = function(e){
+
 	dragging = true;
 	drawing(e);
 }
@@ -48,27 +49,41 @@ var startDraw = function(e){
 var stopDraw = function(){
 	dragging = false;
 	context.beginPath();
+	context.save()
 }
 
-async function predict() {
+async function predict() { 
+	imgData = context.getImageData(0,0, 600, 400);
 
-	canvas.toBlob(function(blob) {
-		image = blob;
-		newImg = document.createElement('img'),
-		url = URL.createObjectURL(blob);
-	
-		newImg.onload = function() {
-		// no longer need to read the blob so it's revoked
-		URL.revokeObjectURL(url);
-		  };
-	
-		newImg.src = url;
-		document.body.appendChild(newImg);
-	});
+	context.putImageData(imgData, 100, 100);
 
 	var predictions = await net.predict(preprocessCanvas(canvas)).data(); // this will run whenever "tensor" updates
 	console.log(predictions);
 	console.log(tf.argMax(predictions).data());
+	
+	// newImg = document.createElement('img')
+	// newImg.onload = function() {
+
+	// 	document.body.appendChild(canvas);
+	// }
+	//url = URL.createObjectURL('')
+
+	// canvas.toBlob(function(blob) {
+	// 	image = blob;
+	// 	newImg = document.createElement('img'),
+	// 	url = URL.createObjectURL(blob);
+	
+	// 	newImg.onload = function() {
+	// 	// no longer need to read the blob so it's revoked
+	// 	URL.revokeObjectURL(url);
+	// 	  };
+	
+	// 	newImg.src = url;
+	// 	document.body.appendChild(newImg);
+	// });
+
+	
+	
 }
 
 // EventListeners
