@@ -5,6 +5,8 @@ import pandas as pd
 from sklearn.utils import shuffle
 import tensorflowjs as tfjs
 from sklearn.metrics import confusion_matrix
+from time import time
+from tensorflow.python.keras.callbacks import TensorBoard
 
 # Load data (numpy 28x28 bitmaps)
 data_bird = np.load('bitmaps/bird.npy')
@@ -71,17 +73,20 @@ model.add(tf.keras.layers.Dense(128, input_shape=(784,), activation=tf.nn.relu))
 model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))
 model.add(tf.keras.layers.Dense(6, activation=tf.nn.softmax))
 
+#Tensorboard init
+tensorboard = TensorBoard(log_dir='logs\{}'.format(time()))
+
 # Training
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-model.fit(x_train, y_train, epochs=2)
+model.fit(np.array(x_train), np.array(y_train), epochs=2, callbacks=[tensorboard])
 
 # Testing the model
-val_loss, val_acc = model.evaluate(x_test, y_test)
+val_loss, val_acc = model.evaluate(np.array(x_test), np.array(y_test))
 print(val_loss, val_acc)
 
 # Save the model an loading it into the program again. Also saving it in js format
-#model.save('doodle_model_2')
-#new_model = tf.keras.models.load_model('doodle_model_2')
+#model.save('doodle_model')
+#new_model = tf.keras.models.load_model('doodle_model')
 tfjs.converters.save_keras_model(model, "doodle_model_js")
 
 # Predict (Predicts all images in x_test and creates an array with each prediction)
@@ -156,7 +161,7 @@ ax.set(xticks=np.arange(len(animals)),
            yticks=np.arange((len(animals))),
            xticklabels=animals, 
            yticklabels=animals,
-           ylim=(-0.5, 5.5),
+           ylim=[-0.5,5.5],
            title='Confusion Matrix',
            xlabel= 'Predicted animal',
            ylabel='True animal')
