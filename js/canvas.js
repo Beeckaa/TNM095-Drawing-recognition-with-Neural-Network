@@ -11,6 +11,7 @@ canvas.height = 400;
 
 context.lineWidth = radius * 2;
 
+let label;
 let net;
 var predictions;
 
@@ -19,7 +20,7 @@ async function app() {
 
     // Load the model.
     net = await tf.loadLayersModel('http://localhost:8080/model.json');
-    console.log('Successfully loaded model');
+	console.log('Successfully loaded model');
 }
 
 app();
@@ -60,6 +61,37 @@ async function predict() {
 
 	var predictions = await net.predict(preprocessCanvas(imgData)); // this will run whenever "tensor" updates
 	console.log("Predictions: " + predictions);
+
+	a = predictions.dataSync();
+	arr = Array.from(a);
+
+	console.log(arr)
+
+	label = arr.indexOf(Math.max(...arr));
+
+	switch(label) {
+		case 0:
+			console.log('Bird')
+			break;
+		case 1:
+			console.log('Sheep')
+			break;
+		case 2:
+			console.log('Turtle')
+			break;
+		case 3:
+			console.log('Hedgehog')
+			break;
+		case 4:
+			console.log('Octopus')
+			break;
+		case 5:
+			console.log('Giraffe')
+			break;
+		default:
+			break;
+		}
+
 }
 
 // EventListeners
