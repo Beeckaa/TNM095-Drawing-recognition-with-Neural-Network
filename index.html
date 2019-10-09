@@ -5,9 +5,14 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css">
     </head>
     <body>
-        <canvas id="canvas" style="display: block;"></canvas>
-        <button onclick="clearCanvas()">Clear canvas</button>
-        <button onclick="predict()">Predict image</button>
+        <div id="left">
+            <canvas id="canvas" style="display: block;"></canvas>
+            <button onclick="clearCanvas()">Clear canvas</button>
+            <button onclick="predict()">Predict image</button>
+        </div>
+        <div id="right">
+            <div id="speech-bubble">....</div>
+        </div>
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>

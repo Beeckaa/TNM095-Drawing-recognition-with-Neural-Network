@@ -1,7 +1,7 @@
 // Variables related to the canvas drawing
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
-var radius = 2;
+var radius = 12;
 var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
@@ -16,8 +16,8 @@ context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 // Keep track of min/max for each axis
-var minX = 280,
-	minY = 280,
+var minX = 400,
+	minY = 400,
 	maxX = 0,
 	maxY = 0;
 
@@ -43,14 +43,15 @@ async function app() {
 var clearCanvas = function() {
 	// Set the variables to its initial state 
 	// and add a new black background to the canvas.
-	minX = 280;
-	minY = 280;
+	minX = 400;
+	minY = 400;
 	maxX = 0;
 	maxY = 0;
     context.clearRect(0, 0, canvas.width, canvas.height);
 
 	context.fillStyle = '#000';
 	context.fillRect(0,0,canvas.width, canvas.height);
+	document.getElementById('speech-bubble').innerHTML = "...";
 }
 
 /* 
@@ -100,19 +101,21 @@ var stopDraw = function(){
 	dragging = false;
 	context.beginPath();
 	context.save()
+	predict();
 }
 
 /* 
  * Async function to make the prediction from our canvas. 
  */
 async function predict() { 
+
 	// Get the image data from the canvas with boundingbox
     const imgData = getImageData();
 
 	// Draw imgData on canvas (remove this later)
-	context.fillStyle = '#fff';
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	context.putImageData(imgData, 100, 100);
+	//context.fillStyle = '#fff';
+	//context.fillRect(0, 0, canvas.width, canvas.height);
+	//context.putImageData(imgData, 100, 100);
 
 	// Do the prediction and preprocess the canvas
 	var predictions = await net.predict(preprocessCanvas(imgData));
@@ -124,30 +127,45 @@ async function predict() {
 	console.log(arr)
 
 	label = arr.indexOf(Math.max(...arr));
+	var predictionText = '';
+	var percent = '';
 
 	switch(label) {
 		case 0:
+			predictionText = 'Bird';
+			percent = arr[0];
 			console.log('Bird')
 			break;
 		case 1:
+			predictionText = 'Sheep';
+			percent = arr[1];
 			console.log('Sheep')
 			break;
 		case 2:
-			console.log('Turtle')
+			predictionText = 'Turtle';
+			percent = arr[2];
+			console.log('turtle')
 			break;
 		case 3:
+			predictionText = 'Hedgehog';
+			percent = arr[3];
 			console.log('Hedgehog')
 			break;
 		case 4:
+			predictionText = 'Octopus';
+			percent = arr[4];
 			console.log('Octopus')
 			break;
 		case 5:
+			predictionText = 'Giraffe';
+			percent = arr[5];
 			console.log('Giraffe')
 			break;
 		default:
 			break;
-		}
+	}
 
+	document.getElementById('speech-bubble').innerHTML = "I'm " + Math.round(percent*100) + "% sure your drawing is a " + predictionText + "!";
 }
 
 /* 
@@ -206,6 +224,7 @@ canvas.addEventListener('touchend', function(e){
     dragging = false;
 	context.beginPath();
     e.preventDefault()
+	predict();
 }, false);
 
 /* 
@@ -221,6 +240,21 @@ preprocessCanvas = (drawing) => {
 	.expandDims() // Shape: (1, 784) - network makes predictions for "batches" of images
 	.toFloat(); // Network works with floating points inputs
 	return tensor.div(255.0); // Normalize [0..255] values into [0..1] range
+
+	/*return tf.tidy(()=>{
+        let tensor = tf.browser.fromPixels(drawing, 1); // convert the image data to a tensor
+
+        // resize to 28 x 28  
+        const resized = tf.image.resizeBilinear(tensor, [28, 28]).toFloat(); 
+
+        // Normalize the image 
+        const offset = tf.scalar(255.0);
+        const normalized = tf.scalar(1.0).sub(resized.div(offset));
+
+        // insert a dimension of 1 into a tensor's shape
+        const batched = normalized.expandDims(0);
+        return batched;
+    })*/
 }
 
 /* 
@@ -233,7 +267,7 @@ function getImageData() {
 	} else {
 		maxX = maxY;
 	}
-	const imgData = context.getImageData(minX+1, minY+1, maxX, maxY);
+	const imgData = context.getImageData(minX, minY, maxX, maxY);
 	return imgData;
 }
 
