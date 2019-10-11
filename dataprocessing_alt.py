@@ -18,6 +18,10 @@ data_turtle = np.load('bitmaps/seaturtle.npy')
 data_hedgehog = np.load('bitmaps/hedgehog.npy')
 data_octopus = np.load('bitmaps/octopus.npy')
 data_giraffe = np.load('bitmaps/giraffe.npy')
+data_cat = np.load('bitmaps/cat.npy')
+data_fish = np.load('bitmaps/fish.npy')
+data_butterfly = np.load('bitmaps/butterfly.npy')
+data_lion = np.load('bitmaps/lion.npy')
 
 # Create label arrays
 label_bird = [0] * len(data_bird)
@@ -26,6 +30,10 @@ label_turtle = [2] * len(data_turtle)
 label_hedgehog = [3] * len(data_hedgehog)
 label_octopus = [4] * len(data_octopus)
 label_giraffe = [5] * len(data_giraffe)
+label_cat = [6] * len(data_cat)
+label_fish = [7] * len(data_fish)
+label_butterfly = [8] * len(data_butterfly)
+label_lion = [9] * len(data_lion)
 
 # Separating training data and testing data
 x_train_reshape = []
@@ -54,12 +62,28 @@ octopus_y_train, octopus_y_test = label_octopus[:10000], label_octopus[10000:120
 giraffe_x_train, giraffe_x_test = data_giraffe[:10000], data_giraffe[10000:12000]
 giraffe_y_train, giraffe_y_test = label_giraffe[:10000], label_giraffe[10000:12000]
 
-# concatenate
-x_train = np.concatenate([bird_x_train[:], sheep_x_train[:], turtle_x_train[:], hedgehog_x_train[:], octopus_x_train[:], giraffe_x_train[:]])
-y_train = np.concatenate([bird_y_train[:], sheep_y_train[:], turtle_y_train[:], hedgehog_y_train[:], octopus_y_train[:], giraffe_y_train[:]])
+# Cat
+cat_x_train, cat_x_test = data_cat[:10000], data_cat[10000:15000]
+cat_y_train, cat_y_test = label_cat[:10000], label_cat[10000:15000]
 
-x_test = np.concatenate([bird_x_test[:], sheep_x_test[:], turtle_x_test[:], hedgehog_x_test[:], octopus_x_test[:], giraffe_x_test[:]])
-y_test = np.concatenate([bird_y_test[:], sheep_y_test[:], turtle_y_test[:],hedgehog_y_test[:], octopus_y_test[:], giraffe_y_test[:]])
+# Fish
+fish_x_train, fish_x_test = data_fish[:10000], data_fish[10000:15000]
+fish_y_train, fish_y_test = label_fish[:10000], label_fish[10000:15000]
+
+# Butterfly
+butterfly_x_train, butterfly_x_test = data_butterfly[:10000], data_butterfly[10000:15000]
+butterfly_y_train, butterfly_y_test = label_butterfly[:10000], label_butterfly[10000:15000]
+
+# Lion
+lion_x_train, lion_x_test = data_lion[:10000], data_lion[10000:15000]
+lion_y_train, lion_y_test = label_lion[:10000], label_lion[10000:15000]
+
+# concatenate
+x_train = np.concatenate([bird_x_train[:], sheep_x_train[:], turtle_x_train[:], hedgehog_x_train[:], octopus_x_train[:], giraffe_x_train[:], cat_x_train[:], fish_x_train[:], butterfly_x_train[:], lion_x_train[:]])
+y_train = np.concatenate([bird_y_train[:], sheep_y_train[:], turtle_y_train[:], hedgehog_y_train[:], octopus_y_train[:], giraffe_y_train[:], cat_y_train[:], fish_y_train[:], butterfly_y_train[:], lion_y_train[:]])
+
+x_test = np.concatenate([bird_x_test[:], sheep_x_test[:], turtle_x_test[:], hedgehog_x_test[:], octopus_x_test[:], giraffe_x_test[:], cat_x_test[:], fish_x_test[:], butterfly_x_test[:], lion_x_test[:]])
+y_test = np.concatenate([bird_y_test[:], sheep_y_test[:], turtle_y_test[:], hedgehog_y_test[:], octopus_y_test[:], giraffe_y_test[:], cat_y_test[:], fish_y_test[:], butterfly_y_test[:], lion_y_test[:]])
 
 # Shuffle the order
 x_train, y_train = shuffle(x_train, y_train)
@@ -99,7 +123,7 @@ model.add(Dropout(0.25))
 model.add(Flatten())
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.5))
-model.add(Dense(6, activation='softmax'))
+model.add(Dense(10, activation='softmax'))
 
 
 # model.add(tf.keras.layers.Flatten(input_shape=(28, 28)))
@@ -154,6 +178,14 @@ for i in range(25):
         plt.xlabel('octopus ')
     elif np.argmax(predictions[[i]]) == 5:
         plt.xlabel('giraffe ')
+    elif np.argmax(predictions[[i]]) == 6:
+        plt.xlabel('cat ')
+    elif np.argmax(predictions[[i]]) == 7:
+        plt.xlabel('fish ')
+    elif np.argmax(predictions[[i]]) == 8:
+        plt.xlabel('butterfly ')
+    elif np.argmax(predictions[[i]]) == 9:
+        plt.xlabel('lion ')
     plt.title(y_test[i])
     plt.ylabel(round(100*np.max(predictions[i]), 2))
 plt.show()
@@ -184,11 +216,23 @@ for i in range(len(y_test)):
     
     elif np.argmax(predictions[[i]]) == 5:
         temp_list.append(5)
+    
+    elif np.argmax(predictions[[i]]) == 6:
+        temp_list.append(6)
+
+    elif np.argmax(predictions[[i]]) == 7:
+        temp_list.append(7)
+
+    elif np.argmax(predictions[[i]]) == 8:
+        temp_list.append(8)
+
+    elif np.argmax(predictions[[i]]) == 9:
+        temp_list.append(9)
 
 #Create a confusion matrix
 cm = confusion_matrix(y_test, temp_list)
 
-animals = ['bird', 'sheep', 'turtle', 'hedgehog', 'octopus', 'giraffe']
+animals = ['bird', 'sheep', 'turtle', 'hedgehog','octopus', 'giraffe', 'cat', 'fish', 'butterfly', 'lion']
 
 fig, ax = plt.subplots()
 im = ax.imshow(cm, interpolation='nearest')

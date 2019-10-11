@@ -1,7 +1,7 @@
 // Variables related to the canvas drawing
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
-var radius = 10;
+var radius = 12;
 var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
@@ -160,6 +160,26 @@ async function predict() {
 			predictionText = 'Giraffe';
 			percent = arr[5];
 			console.log('Giraffe')
+			break;
+		case 6:
+			predictionText = 'Cat';
+			percent = arr[6];
+			console.log('Cat')
+			break;
+		case 7:
+			predictionText = 'Fish';
+			percent = arr[7];
+			console.log('Fish')
+			break;
+		case 8:
+			predictionText = 'Butterfly';
+			percent = arr[8];
+			console.log('Butterfly')
+			break;
+		case 9:
+			predictionText = 'Lion';
+			percent = arr[9];
+			console.log('Lion')
 			break;
 		default:
 			break;

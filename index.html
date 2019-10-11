@@ -5,13 +5,19 @@
         <link rel="stylesheet" type="text/css" href="stylesheet.css">
     </head>
     <body>
-        <div id="left">
-            <canvas id="canvas" style="display: block;"></canvas>
-            <button onclick="clearCanvas()">Clear canvas</button>
-            <button onclick="predict()">Predict image</button>
+        <div class="header">
+            <h1>Animal doodle recognizer</h1>
+            <p>Draw an animal in the canvas</p>
         </div>
-        <div id="right">
-            <div id="speech-bubble">....</div>
+        <div id="content">
+            <div id="left">
+                <canvas id="canvas" style="display: block;"></canvas>
+                <button class="btn" onclick="clearCanvas()">Clear canvas</button>
+                <button onclick="predict()">Predict image</button>
+            </div>
+            <div id="right">
+                <div id="speech-bubble">....</div>
+            </div>
         </div>
 
         <!-- Scripts -->
