@@ -1,3 +1,6 @@
+// Categories
+var categories = ['Bird', 'Sheep', 'Seaturtle', 'Hedgehog', 'Octopus', 'Giraffe', 'Cat', 'Fish', 'Butterfly', 'Lion'];
+
 // Variables related to the canvas drawing
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
@@ -38,11 +41,43 @@ async function app() {
 }
 
 /* 
+ * Function to create table of predictions. 
+ */
+var predictionTable = function(predictions) {
+	document.getElementById('predictionTable').innerHTML = " ";
+	var myTableDiv = document.getElementById("predictionTable");
+	console.log(predictions);
+	var table = document.createElement('table');
+	table.border = '1';
+
+	var tableBody = document.createElement('tbody');
+	table.appendChild(tableBody);
+
+	for (var i = 0; i < categories.length; i++) {
+			var tr = document.createElement('tr');
+			tableBody.appendChild(tr);
+
+			for (var j = 0; j < 2; j++) {
+				var td = document.createElement('td');
+				td.width = '75';
+				if (j == 0) {
+					td.appendChild(document.createTextNode(categories[i]));
+					tr.appendChild(td);
+				} else {
+					td.appendChild(document.createTextNode(Math.round(predictions[i]*100)+ "%"));
+					tr.appendChild(td);
+				}
+		}
+	}
+	myTableDiv.appendChild(table);
+}
+
+/* 
  * Function to clear the canvas. 
  */
 var clearCanvas = function() {
 	// Set the variables to its initial state 
-	// and add a new black background to the canvas.
+	// and add a new white background to the canvas.
 	minX = 400;
 	minY = 400;
 	maxX = 0;
@@ -52,6 +87,7 @@ var clearCanvas = function() {
 	context.fillStyle = '#fff';
 	context.fillRect(0,0,canvas.width, canvas.height);
 	document.getElementById('speech-bubble').innerHTML = "...";
+	document.getElementById('predictionTable').innerHTML = " ";
 }
 
 /* 
@@ -73,10 +109,10 @@ var drawing = function(e){
 		var y = e.clientY - rect.top;
 		
 		// When something is drawn, calculate its impact (position and radius)
-		_minX = x - radius;
-		_minY = y - radius;
-		_maxX = x + radius;
-		_maxY = y + radius;
+		_minX = x - radius*2 - 10;
+		_minY = y - radius*2 - 10;
+		_maxX = x + radius*2;
+		_maxY = y + radius*2;
 
 		// Calculate new min/max boundary
 		if (_minX < minX) minX = _minX > 0 ? _minX : 0;
@@ -112,10 +148,10 @@ async function predict() {
 	// Get the image data from the canvas with boundingbox
     const imgData = getImageData();
 
-	/*// Draw imgData on canvas (remove this later)
-	context.fillStyle = '#000';
-	context.fillRect(0, 0, canvas.width, canvas.height);
-	context.putImageData(imgData, 100, 100);*/
+	// Draw imgData on canvas (remove this later)
+	//context.fillStyle = '#000';
+	//context.fillRect(0, 0, canvas.width, canvas.height);
+	//context.putImageData(imgData, 100, 100);
 
 	// Do the prediction and preprocess the canvas
 	var predictions = await net.predict(preprocessCanvas(imgData));
@@ -124,6 +160,7 @@ async function predict() {
 	a = predictions.dataSync();
 	arr = Array.from(a);
 
+	predictionTable(arr);
 	console.log(arr)
 
 	label = arr.indexOf(Math.max(...arr));
@@ -196,11 +233,30 @@ canvas.addEventListener('mousemove', drawing);
 canvas.addEventListener('mouseup', stopDraw);
 
 /* 
+ * Get the position of a touch relative to the canvas.
+ */
+function getTouchPos(canvasDom, touchEvent) {
+  var rect = canvasDom.getBoundingClientRect();
+  console.log("Rect " + rect.left + " " + rect.top);
+  return {
+    x: touchEvent.touches[0].clientX - rect.left,
+    y: touchEvent.touches[0].clientY - rect.top
+  };
+}
+
+/* 
  * Eventlistener and function for touchstart. 
  */
 canvas.addEventListener('touchstart', function(e){
     dragging = true;
-    e.preventDefault()
+    e.preventDefault();
+	mousePos = getTouchPos(canvas, e);
+	var touch = e.touches[0];
+	var mouseEvent = new MouseEvent("mousedown", {
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	});
+	canvas.dispatchEvent(mouseEvent);
 }, false);
 
 /* 
@@ -208,16 +264,14 @@ canvas.addEventListener('touchstart', function(e){
  */
 canvas.addEventListener('touchmove', function(e){
     var touchobj = e.changedTouches[0] // Reference first touch point for this event
+	console.log(touchobj);
     if(dragging) {
-		context.strokeStyle = '#000';
-		context.fillStyle = '#000';
-		context.lineTo(touchobj.clientX, touchobj.clientY);
-		context.stroke();
-		context.beginPath();
-		context.arc(touchobj.clientX, touchobj.clientY, radius, start, end);
-		context.fill();
-		context.beginPath();
-		context.moveTo(touchobj.clientX, touchobj.clientY);
+
+		var mouseEvent = new MouseEvent("mousemove", {
+			clientX: touchobj.clientX,
+			clientY: touchobj.clientY
+		});
+		canvas.dispatchEvent(mouseEvent);
 
 		var x = touchobj.clientX - rect.left;
 		var y = touchobj.clientY - rect.top;
@@ -234,7 +288,7 @@ canvas.addEventListener('touchmove', function(e){
 		if (_maxX > maxX) maxX = _maxX < canvas.width  ? _maxX : canvas.width;
 		if (_maxY > maxY) maxY = _maxY < canvas.height ? _maxY : canvas.height;
 	}
-    e.preventDefault()
+    e.preventDefault();
 }, false);
 
 /* 
@@ -243,7 +297,9 @@ canvas.addEventListener('touchmove', function(e){
 canvas.addEventListener('touchend', function(e){
     dragging = false;
 	context.beginPath();
-    e.preventDefault()
+    e.preventDefault();
+	var mouseEvent = new MouseEvent("mouseup", {});
+  	canvas.dispatchEvent(mouseEvent);
 	predict();
 }, false);
 
@@ -288,6 +344,11 @@ function getImageData() {
 		maxX = maxY;
 	}
 	const imgData = context.getImageData(minX, minY, maxX, maxY);
+
+	// Get the image data according to DPI
+	//const dpi = window.devicePixelRatio;
+	//const imgData = context.getImageData(minX * dpi, minY * dpi, (maxX - minX) * dpi, (maxY - minY) * dpi);
+
 	var dataArr = imgData.data;
 
 	// Inverting the colors in imgData.

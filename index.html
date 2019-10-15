@@ -13,16 +13,21 @@
             <div id="left">
                 <canvas id="canvas" style="display: block;"></canvas>
                 <button class="btn" onclick="clearCanvas()">Clear canvas</button>
-                <button onclick="predict()">Predict image</button>
+                <!--<button onclick="predict()">Predict image</button>-->
+            </div>
+            <div id="middle">
+                <div id="speech-bubble">....</div>
+                <img id="zoo-keeper" src="images/zoo-keeper.svg" height="250">
             </div>
             <div id="right">
-                <div id="speech-bubble">....</div>
+                <div id="predictionTable"></div>
             </div>
         </div>
 
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/canvas.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
         <!--<script type="text/javascript" src="js/model.js"></script>-->

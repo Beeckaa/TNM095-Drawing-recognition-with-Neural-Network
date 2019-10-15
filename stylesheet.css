@@ -23,8 +23,13 @@ html {
     float: left;
 }
 
+#middle {
+    float: left;
+}
+
 #right {
     float: left;
+    padding-left: 50px;
 }
 
 canvas {
@@ -54,7 +59,14 @@ canvas {
     bottom: -20px;
     content: "";
     position: absolute;
-    right: 20px;
+    left: 20px;
+}
+
+/*******************************
+            Zoo-keeper
+********************************/
+#zoo-keeper {
+    margin-top: -30px;
 }
 
 /*******************************
@@ -84,4 +96,23 @@ canvas {
 .btn:active {
 	position: relative;
 	top: 1px;
+}
+
+/*******************************
+            Tables
+********************************/
+
+table, td, th {  
+  border: 1px solid #44918b;
+  text-align: left;
+  font-size: 14px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 10px;
 }
