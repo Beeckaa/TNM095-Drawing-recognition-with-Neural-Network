@@ -12,11 +12,14 @@ html {
   text-align: center;
   background: #44918b;
   color: white;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 #content {
     padding: 15px;
+    margin: auto;
+    width: 90%;
+    height: 100%;
 }
 
 #left {
@@ -44,9 +47,9 @@ canvas {
     background: #44918b;
     -webkit-border-radius: 4px;
             border-radius: 4px;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     line-height: 1.3;
-    margin: 0 auto 40px;
+    margin: 100px auto 0px;
     margin-left: 20px;
     max-width: 400px;
     padding: 15px;
@@ -66,7 +69,7 @@ canvas {
             Zoo-keeper
 ********************************/
 #zoo-keeper {
-    margin-top: -30px;
+    margin-top: 5px;
 }
 
 /*******************************
@@ -103,7 +106,8 @@ canvas {
 ********************************/
 
 table, td, th {  
-  border: 1px solid #44918b;
+  /*border: 2px solid #79ad9e;*/
+  border: 0;
   text-align: left;
   font-size: 14px;
 }
@@ -111,8 +115,18 @@ table, td, th {
 table {
   border-collapse: collapse;
   width: 100%;
+  border: 0.5px solid #44918b;
 }
 
 th, td {
   padding: 10px;
+}
+
+tr:nth-child(even) {
+    background-color: #44918b;
+    color: #fff;
+}
+
+tr:nth-child(odd) {
+    color: #44918b;
 }

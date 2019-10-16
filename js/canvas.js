@@ -4,7 +4,7 @@ var categories = ['Bird', 'Sheep', 'Seaturtle', 'Hedgehog', 'Octopus', 'Giraffe'
 // Variables related to the canvas drawing
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
-var radius = 12;
+var radius = 10;
 var start = 0;
 var end = Math.PI * 2;
 var dragging = false;
@@ -27,7 +27,7 @@ var minX = 400,
 // Variables related to the network and its predictions
 let label;
 let net;
-var predictions;
+var predictions = new Array(categories.length).fill(0);
 
 /* 
  * Async function to load our neural network.
@@ -38,6 +38,8 @@ async function app() {
     // Load the model.
     net = await tf.loadLayersModel('http://localhost:8080/model.json');
 	console.log('Successfully loaded model');
+
+	predictionTable(predictions);
 }
 
 /* 
@@ -86,8 +88,11 @@ var clearCanvas = function() {
 
 	context.fillStyle = '#fff';
 	context.fillRect(0,0,canvas.width, canvas.height);
-	document.getElementById('speech-bubble').innerHTML = "...";
+	document.getElementById('speech-bubble').innerHTML = "Hi, draw something on the canvas!";
 	document.getElementById('predictionTable').innerHTML = " ";
+	document.getElementById('zoo-keeper').src='images/zoo-keeper2.svg';
+	predictions = new Array(categories.length).fill(0);
+	predictionTable(predictions);
 }
 
 /* 
@@ -169,60 +174,76 @@ async function predict() {
 
 	switch(label) {
 		case 0:
-			predictionText = 'Bird';
+			predictionText = categories[0];
 			percent = arr[0];
 			console.log('Bird')
 			break;
 		case 1:
-			predictionText = 'Sheep';
+			predictionText = categories[1];
 			percent = arr[1];
 			console.log('Sheep')
 			break;
 		case 2:
-			predictionText = 'Turtle';
+			predictionText = categories[2];
 			percent = arr[2];
 			console.log('turtle')
 			break;
 		case 3:
-			predictionText = 'Hedgehog';
+			predictionText = categories[3];
 			percent = arr[3];
 			console.log('Hedgehog')
 			break;
 		case 4:
-			predictionText = 'Octopus';
+			predictionText = categories[4];
 			percent = arr[4];
 			console.log('Octopus')
 			break;
 		case 5:
-			predictionText = 'Giraffe';
+			predictionText = categories[5];
 			percent = arr[5];
 			console.log('Giraffe')
 			break;
 		case 6:
-			predictionText = 'Cat';
+			predictionText = categories[6];
 			percent = arr[6];
 			console.log('Cat')
 			break;
 		case 7:
-			predictionText = 'Fish';
+			predictionText = categories[7];
 			percent = arr[7];
 			console.log('Fish')
 			break;
 		case 8:
-			predictionText = 'Butterfly';
+			predictionText = categories[8];
 			percent = arr[8];
 			console.log('Butterfly')
 			break;
 		case 9:
-			predictionText = 'Lion';
+			predictionText = categories[9];
 			percent = arr[9];
 			console.log('Lion')
 			break;
 		default:
 			break;
 	}
-
-	document.getElementById('speech-bubble').innerHTML = "I'm " + Math.round(percent*100) + "% sure your drawing is a " + predictionText + "!";
+ 
+	// Text messages to be shown in speech-bubble and change AI-robot image
+	if (percent*100 <= 30) {
+		document.getElementById('speech-bubble').innerHTML = "You're really bad at drawing!";
+		document.getElementById('zoo-keeper').src='images/zoo-keeper5.svg';
+	} else if (percent*100 <= 50 && percent*100 >= 30) {
+		document.getElementById('speech-bubble').innerHTML = "Hmm... that doesn't look like anything!";
+		document.getElementById('zoo-keeper').src='images/zoo-keeper5.svg';
+	} else if (percent*100 <= 70 && percent*100 >= 50) {
+		document.getElementById('speech-bubble').innerHTML = "Draw some more...";
+		document.getElementById('zoo-keeper').src='images/zoo-keeper3.svg';
+	} else if (percent*100 <= 90 && percent*100 >= 70) {
+		document.getElementById('speech-bubble').innerHTML = "I'm " + Math.round(percent*100) + "% sure your drawing is a " + predictionText + "!";
+		document.getElementById('zoo-keeper').src='images/zoo-keeper4.svg';
+	} else {
+		document.getElementById('speech-bubble').innerHTML = "Oh, I know! I'm sure your drawing is a " + predictionText + "!";
+		document.getElementById('zoo-keeper').src='images/zoo-keeper4.svg';
+	}
 }
 
 /* 
