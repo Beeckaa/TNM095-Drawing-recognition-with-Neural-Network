@@ -36,44 +36,44 @@ label_lion = [9] * len(data_lion)
 # Separating training data and testing data
 
 # Bird
-bird_x_train, bird_x_test = data_bird[:10000], data_bird[10000:15000]
-bird_y_train, bird_y_test = label_bird[:10000], label_bird[10000:15000]
+bird_x_train, bird_x_test = data_bird[:50000], data_bird[50000:55000]
+bird_y_train, bird_y_test = label_bird[:50000], label_bird[50000:55000]
 
 # Sheep
-sheep_x_train, sheep_x_test = data_sheep[:10000], data_sheep[10000:15000]
-sheep_y_train, sheep_y_test = label_sheep[:10000], label_sheep[10000:15000]
+sheep_x_train, sheep_x_test = data_sheep[:50000], data_sheep[50000:55000]
+sheep_y_train, sheep_y_test = label_sheep[:50000], label_sheep[50000:55000]
 
 # Turtle
-turtle_x_train, turtle_x_test = data_turtle[:10000], data_turtle[10000:15000]
-turtle_y_train, turtle_y_test = label_turtle[:10000], label_turtle[10000:15000]
+turtle_x_train, turtle_x_test = data_turtle[:50000], data_turtle[50000:55000]
+turtle_y_train, turtle_y_test = label_turtle[:50000], label_turtle[50000:55000]
 
 # Hedgehog
-hedgehog_x_train, hedgehog_x_test = data_hedgehog[:10000], data_hedgehog[10000:15000]
-hedgehog_y_train, hedgehog_y_test = label_hedgehog[:10000], label_hedgehog[10000:15000]
+hedgehog_x_train, hedgehog_x_test = data_hedgehog[:50000], data_hedgehog[50000:55000]
+hedgehog_y_train, hedgehog_y_test = label_hedgehog[:50000], label_hedgehog[50000:55000]
 
 # Octopus
-octopus_x_train, octopus_x_test = data_octopus[:10000], data_octopus[10000:15000]
-octopus_y_train, octopus_y_test = label_octopus[:10000], label_octopus[10000:15000]
+octopus_x_train, octopus_x_test = data_octopus[:50000], data_octopus[50000:55000]
+octopus_y_train, octopus_y_test = label_octopus[:50000], label_octopus[50000:55000]
 
 # Giraffe
-giraffe_x_train, giraffe_x_test = data_giraffe[:10000], data_giraffe[10000:15000]
-giraffe_y_train, giraffe_y_test = label_giraffe[:10000], label_giraffe[10000:15000]
+giraffe_x_train, giraffe_x_test = data_giraffe[:50000], data_giraffe[50000:55000]
+giraffe_y_train, giraffe_y_test = label_giraffe[:50000], label_giraffe[50000:55000]
 
 # Cat
-cat_x_train, cat_x_test = data_cat[:10000], data_cat[10000:15000]
-cat_y_train, cat_y_test = label_cat[:10000], label_cat[10000:15000]
+cat_x_train, cat_x_test = data_cat[:50000], data_cat[50000:55000]
+cat_y_train, cat_y_test = label_cat[:50000], label_cat[50000:55000]
 
 # Fish
-fish_x_train, fish_x_test = data_fish[:10000], data_fish[10000:15000]
-fish_y_train, fish_y_test = label_fish[:10000], label_fish[10000:15000]
+fish_x_train, fish_x_test = data_fish[:50000], data_fish[50000:55000]
+fish_y_train, fish_y_test = label_fish[:50000], label_fish[50000:55000]
 
 # Butterfly
-butterfly_x_train, butterfly_x_test = data_butterfly[:10000], data_butterfly[10000:15000]
-butterfly_y_train, butterfly_y_test = label_butterfly[:10000], label_butterfly[10000:15000]
+butterfly_x_train, butterfly_x_test = data_butterfly[:50000], data_butterfly[50000:55000]
+butterfly_y_train, butterfly_y_test = label_butterfly[:50000], label_butterfly[50000:55000]
 
 # Lion
-lion_x_train, lion_x_test = data_lion[:10000], data_lion[10000:15000]
-lion_y_train, lion_y_test = label_lion[:10000], label_lion[10000:15000]
+lion_x_train, lion_x_test = data_lion[:50000], data_lion[50000:55000]
+lion_y_train, lion_y_test = label_lion[:50000], label_lion[50000:55000]
 
 # concatenate
 x_train = np.concatenate([bird_x_train[:], sheep_x_train[:], turtle_x_train[:], hedgehog_x_train[:], octopus_x_train[:], giraffe_x_train[:], cat_x_train[:], fish_x_train[:], butterfly_x_train[:], lion_x_train[:]])
@@ -104,13 +104,13 @@ x_test /= 255.0
 # model.add(tf.keras.layers.Dense(6, activation=tf.nn.softmax))
 
 model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Convolution2D(16, (3, 3),
+model.add(tf.keras.layers.Convolution2D(16, (5, 5),
                         padding='same',
                         input_shape=x_train.shape[1:], activation='relu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-model.add(tf.keras.layers.Convolution2D(32, (3, 3), padding='same', activation= 'relu'))
+model.add(tf.keras.layers.Convolution2D(32, (5, 5), padding='same', activation= 'relu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-model.add(tf.keras.layers.Convolution2D(64, (3, 3), padding='same', activation= 'relu'))
+model.add(tf.keras.layers.Convolution2D(64, (5, 5), padding='same', activation= 'relu'))
 model.add(tf.keras.layers.MaxPooling2D(pool_size =(2,2)))
 model.add(tf.keras.layers.Flatten())
 model.add(tf.keras.layers.Dense(128, activation='relu'))
@@ -122,7 +122,7 @@ tensorboard = TensorBoard(log_dir='logs\{}'.format(time()))
 # Training
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 #model.fit(np.array(x_train), np.array(y_train), epochs=2, callbacks=[tensorboard])
-model.fit(x = x_train, y = y_train, validation_split=0.1, batch_size = 256, verbose=2, epochs=2)
+model.fit(x = x_train, y = y_train, validation_split=0.1, verbose=2, epochs=8, callbacks=[tensorboard])
 
 # Testing the model
 val_loss, val_acc = model.evaluate(np.array(x_test), np.array(y_test))
@@ -226,7 +226,7 @@ ax.set(xticks=np.arange(len(animals)),
            yticks=np.arange((len(animals))),
            xticklabels=animals, 
            yticklabels=animals,
-           ylim=[-0.5,5.5],
+           ylim=[-0.5,10],
            title='Confusion Matrix',
            xlabel= 'Predicted animal',
            ylabel='True animal')
